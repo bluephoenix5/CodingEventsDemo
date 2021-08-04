@@ -21,13 +21,31 @@ namespace CodingEventsDemo.ViewModels
 
         public EventType Type { get; set; }
 
-        public List<SelectListItem> EventTypes { get; set;  } = new List<SelectListItem>
+        public List<SelectListItem> EventTypes { get; set; }
+        public AddEventViewModel()
         {
-            new SelectListItem(EventType.Conference.ToString(), ((int)EventType.Conference).ToString()),
-            new SelectListItem(EventType.Meetup.ToString(), ((int)EventType.Meetup).ToString()),
-            new SelectListItem(EventType.Social.ToString(), ((int)EventType.Social).ToString()),
-            new SelectListItem(EventType.Workshop.ToString(), ((int)EventType.Workshop).ToString())
-        };
+            EventTypes = new List<SelectListItem>();
+            EventTypes.Add(new SelectListItem
+            {
+                Value = EventType.Conference.ToString(),
+                Text = EventType.Conference.ToString()
+            });
+            EventTypes.Add(new SelectListItem
+            {
+                Value = EventType.Meetup.ToString(),
+                Text = EventType.Meetup.ToString()
+            });
+            EventTypes.Add(new SelectListItem
+            {
+                Value = EventType.Social.ToString(),
+                Text = EventType.Social.ToString()
+            });
+            EventTypes.Add(new SelectListItem
+            {
+                Value = EventType.Workshop.ToString(),
+                Text = EventType.Workshop.ToString()
+            });
+        }
 
     }
 }

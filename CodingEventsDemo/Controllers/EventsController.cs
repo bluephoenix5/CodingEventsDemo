@@ -13,25 +13,25 @@ namespace coding_events_practice.Controllers
 {
     public class EventsController : Controller
     {
-        private EventDbContext _context;
-
+        private EventDbContext context;
+        public EventsController(EventDbContext dbContext)
+        {
+            context = dbContext;
+        }
         // GET: /<controller>/
         public IActionResult Index()
         {
-            List<Event> events = _context.Events.ToList();
-
+            List<Event> events = context.Events.ToList();
             return View(events);
         }
-
         public IActionResult Add()
         {
             AddEventViewModel addEventViewModel = new AddEventViewModel();
-
             return View(addEventViewModel);
         }
-
         [HttpPost]
-        public IActionResult Add(AddEventViewModel addEventViewModel)
+        [Route("Events/Add")]
+        public IActionResult NewEvent(AddEventViewModel addEventViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -42,38 +42,28 @@ namespace coding_events_practice.Controllers
                     ContactEmail = addEventViewModel.ContactEmail,
                     Type = addEventViewModel.Type
                 };
-
-                _context.Events.Add(newEvent);
-                _context.SaveChanges();
-
+                context.Events.Add(newEvent);
+                context.SaveChanges();
                 return Redirect("/Events");
             }
-
-            return View(addEventViewModel);
+            return View("Add", addEventViewModel);
         }
-
         public IActionResult Delete()
         {
-            ViewBag.events = _context.Events.ToList();
-
+            //ViewBag.title = "Delete Events";
+            ViewBag.events = context.Events.ToList();
             return View();
         }
-
         [HttpPost]
         public IActionResult Delete(int[] eventIds)
         {
             foreach (int eventId in eventIds)
             {
-                Event theEvent = _context.Events.Find(eventId);
-                _context.Events.Remove(theEvent);
+                Event theEvent = context.Events.Find(eventId);
+                context.Events.Remove(theEvent);
             }
-
+            context.SaveChanges();
             return Redirect("/Events");
-        }
-
-        public EventsController(EventDbContext dbContext)
-        {
-            _context = dbContext;
         }
     }
 }
