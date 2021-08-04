@@ -13,10 +13,12 @@ namespace coding_events_practice.Controllers
 {
     public class EventsController : Controller
     {
+        private EventDbContext _context;
+
         // GET: /<controller>/
         public IActionResult Index()
         {
-            List<Event> events = new List<Event>(EventData.GetAll());
+            List<Event> events = _context.Events.ToList();
 
             return View(events);
         }
@@ -41,7 +43,8 @@ namespace coding_events_practice.Controllers
                     Type = addEventViewModel.Type
                 };
 
-                EventData.Add(newEvent);
+                _context.Events.Add(newEvent);
+                _context.SaveChanges();
 
                 return Redirect("/Events");
             }
@@ -51,7 +54,7 @@ namespace coding_events_practice.Controllers
 
         public IActionResult Delete()
         {
-            ViewBag.events = EventData.GetAll();
+            ViewBag.events = _context.Events.ToList();
 
             return View();
         }
@@ -61,10 +64,16 @@ namespace coding_events_practice.Controllers
         {
             foreach (int eventId in eventIds)
             {
-                EventData.Remove(eventId);
+                Event theEvent = _context.Events.Find(eventId);
+                _context.Events.Remove(theEvent);
             }
 
             return Redirect("/Events");
+        }
+
+        public EventsController(EventDbContext dbContext)
+        {
+            _context = dbContext;
         }
     }
 }
